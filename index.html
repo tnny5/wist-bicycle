@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>駐輪シール</title>
+<!--
+  ウィスティリア中田マンション管理組合／駐輪シール管理
+
+  このページは「包み」です。中身は全部 Google Apps Script 側にあります。
+  ここに置いている理由はひとつだけ：
+
+    GASのWebアプリを直接開くと、Googleが
+    「このアプリケーションは Google Apps Script のユーザーによって作成されたものです／
+      不正行為を報告」という青いバナーを必ず出す。
+    GAS側の設定では消せない（Googleは仕様としている）。
+    別ドメインのページにiframeで埋め込むと出ない。
+
+  やっていることは、自分のURLに付いているクエリをそのままGASへ渡すだけ。
+    ・LIFFから来るとき     ?liff.state=%3Fy%3D2027%26n%3D001
+    ・LINEログインの戻り   ?code=…&state=…
+    ・直接開くとき         ?y=2027&n=001 / ?me=1
+
+  LINE Developers 側では、このページのURLを
+    ・LIFFアプリのエンドポイントURL
+    ・LINEログインのコールバックURL
+  の両方に登録する。
+
+  中身を直すときは GAS（bicycle/gas/）を直す。このファイルは基本さわらない。
+-->
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#F6F7F5; }
+  iframe { border:0; display:block; width:100%; height:100%; }
+  .msg {
+    font-family: system-ui, -apple-system, 'Hiragino Sans', sans-serif;
+    padding: 24px; color:#1A1F1C; line-height:1.8; font-size:16px;
+  }
+</style>
+</head>
+<body>
+<noscript><div class="msg">このページを見るにはJavaScriptが必要です。ブラウザの設定を確かめてください。</div></noscript>
+<script>
+(function () {
+  var GAS = 'https://script.google.com/macros/s/AKfycbw6mXRjijlO0darDQmvc1peHrHsamuoV6D0kEKwtHlDurQeZPnOw_IbtcILVSiEIP1MJg/exec';
+
+  var f = document.createElement('iframe');
+  f.src = GAS + (location.search || '');
+  f.title = '駐輪シール';
+  // 点検画面でカメラを使うため。内側のGASのiframeにも伝わるかは実機で要確認
+  f.setAttribute('allow', 'camera; clipboard-write');
+  f.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+  f.onerror = function () {
+    document.body.innerHTML =
+      '<div class="msg">画面を読み込めませんでした。通信を確かめて開き直してください。</div>';
+  };
+  document.body.appendChild(f);
+})();
+</script>
+</body>
+</html>
